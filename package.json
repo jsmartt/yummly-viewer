@@ -1,13 +1,14 @@
 {
   "name": "yummly-viewer",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A web app for viewing downloaded Yummly collection archives",
   "productName": "Yummly Viewer",
-  "author": "Jared Smartt <jared.smartt@dreamworks.com>",
+  "author": "Jared Smartt <jsmartt-dev@outlook.com>",
   "type": "module",
   "private": true,
   "scripts": {
-    "lint": "eslint -c ./eslint.config.js \"./src*/**/*.{js,cjs,mjs,vue}\"",
+    "lint": "eslint --fix -c ./eslint.config.js \"./src*/**/*.{js,cjs,mjs,vue}\"",
+    "lint-no-fix": "eslint -c ./eslint.config.js \"./src*/**/*.{js,cjs,mjs,vue}\"",
     "test": "echo \"No test specified\" && exit 0",
     "dev": "quasar dev",
     "build": "quasar build",
@@ -15,19 +16,20 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.16.4",
+    "lodash": "^4.17.21",
     "quasar": "^2.16.0",
     "vue": "^3.4.18",
     "vue-router": "^4.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.14.0",
+    "@quasar/app-vite": "^2.0.0",
+    "autoprefixer": "^10.4.2",
     "eslint": "^9.14.0",
     "eslint-plugin-vue": "^9.30.0",
     "globals": "^15.12.0",
-    "vite-plugin-checker": "^0.8.0",
-    "@quasar/app-vite": "^2.0.0",
-    "autoprefixer": "^10.4.2",
-    "postcss": "^8.4.14"
+    "postcss": "^8.4.14",
+    "vite-plugin-checker": "^0.8.0"
   },
   "engines": {
     "node": "^28 || ^26 || ^24 || ^22 || ^20 || ^18",
