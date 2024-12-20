@@ -12,30 +12,63 @@
         />
 
         <q-toolbar-title>
-          Quasar App
+          Yummly Collection Viewer
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <q-btn flat round dense>
+          <q-icon name="help_outline" />
+        </q-btn>
       </q-toolbar>
     </q-header>
 
     <q-drawer
       v-model="leftDrawerOpen"
-      show-if-above
       bordered
     >
       <q-list>
-        <q-item-label
-          header
-        >
-          Essential Links
-        </q-item-label>
+        <q-item clickable :disable="!collections.loaded">
+          <q-item-section avatar>
+            <q-icon name="file_download" />
+          </q-item-section>
 
-        <EssentialLink
-          v-for="link in linksList"
-          :key="link.title"
-          v-bind="link"
-        />
+          <q-item-section>
+            <q-item-label>Export</q-item-label>
+            <q-item-label caption>Download in another format</q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <q-separator/>
+
+        <q-item
+          :active="collections.activeCollectionID === null"
+          clickable
+          @click="collections.setActiveCollection(null)"
+        >
+          <q-item-section>
+            <q-item-label class="text-subtitle1">All Likes</q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <q-separator/>
+
+        <q-item>
+          <q-item-section>
+            <q-item-label class="text-subtitle1 text-center">Collections</q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <q-item
+          v-for="(count, collection) in collections.collections"
+          :key="collection"
+          :active="collections.activeCollectionID === collection"
+          clickable
+          @click="collections.setActiveCollection(collection)"
+        >
+          <q-item-section>
+            <q-item-label>{{ collection }}</q-item-label>
+          </q-item-section>
+          <q-item-section side>{{ count }}</q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
 
@@ -46,57 +79,23 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import EssentialLink from 'components/EssentialLink.vue'
+import { ref, watch } from 'vue'
+import { storeToRefs } from 'pinia'
 
-const linksList = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev'
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework'
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
-]
+import { useCollections } from 'stores/collections';
+const collections = useCollections();
+const { loaded } = storeToRefs(collections)
 
-const leftDrawerOpen = ref(false)
-
+const leftDrawerOpen = ref(loaded.value)
 function toggleLeftDrawer () {
   leftDrawerOpen.value = !leftDrawerOpen.value
 }
+
+watch(loaded, (val) => {
+  if (val) {
+    leftDrawerOpen.value = true
+  } else {
+    leftDrawerOpen.value = false
+  }
+})
 </script>
