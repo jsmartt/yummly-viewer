@@ -1,11 +1,13 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { shallowRef } from 'vue';
 
+import { recipeCollections, recipeID } from 'src/helpers/recipes'
+
 export const useCollections = defineStore('collections', {
   state: () => ({
     loaded: false,
     activeCollectionID: null,
-    recipes: shallowRef({}), // Map ID to recipe details
+    recipes: shallowRef([]), // Map ID to recipe details
     collections: {},  // Map ID to recipe count
   }),
 
@@ -18,27 +20,33 @@ export const useCollections = defineStore('collections', {
 
     loadData(data) {
       // TODO: Do some basic validations
-      data.feed.forEach(recipe => { // TODO: Remove slice
-        this.parseRecipe(recipe)
-      })
-      this.loaded = true
-    },
 
-    parseRecipe(recipe) {
-      console.log(`Parsing recipe:`)
-      const id = recipe['tracking-id'] || recipe['urb-url-id']
-      if (!id) {
-        console.error('Could not determine ID for recipe:')
-        console.error(recipe)
-        return
-      }
-      this.recipes[id] = recipe
-      if (recipe.display && recipe.display.collections) {
-        recipe.display.collections.forEach(c => {
-          if (!this.collections[c]) this.collections[c] = 0
-          this.collections[c] += 1
-        })
-      }
+      // Use local vars so we can assign to the state all at once and prevent a reactivity mess and big slowdowns
+      const collections = {}
+      const recipes = {}
+      data.feed.forEach(recipe => {
+        const id = recipeID(recipe)
+        if (!id) {
+          console.error('Could not determine ID for recipe:')
+          console.error(recipe)
+          return
+        }
+        recipe.id = id
+        if (recipes[id]) {
+          console.warn(`Duplicate entries found for recipe ${id}`)
+        }
+        recipes[id] = recipe // TODO: Validate no duplicates
+        const collectionsList = recipeCollections(recipe)
+        if (collectionsList) {
+          collectionsList.forEach(c => {
+            if (!collections[c]) collections[c] = 0
+            collections[c] += 1
+          })
+        }
+      })
+      this.collections = collections
+      this.recipes = Object.values(recipes)
+      this.loaded = true
     },
   }
 })

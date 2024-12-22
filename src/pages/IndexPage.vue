@@ -4,13 +4,14 @@
       <load-file />
     </div>
     <div v-else>
-      TODO
+      <recipe-list />
     </div>
   </q-page>
 </template>
 
 <script setup>
 import LoadFile from 'components/LoadFile.vue'
+import RecipeList from 'components/RecipeList.vue'
 
 // import { ref, watch } from 'vue'
 
