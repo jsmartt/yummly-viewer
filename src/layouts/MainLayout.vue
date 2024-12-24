@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+    <q-header elevated class="print-hide">
       <q-toolbar>
         <q-btn
           flat
@@ -24,6 +24,7 @@
     <q-drawer
       v-model="leftDrawerOpen"
       bordered
+      class="print-hide"
     >
       <q-list>
         <q-item clickable :disable="!collections.loaded || true">
@@ -42,11 +43,12 @@
         <q-item
           :active="collections.activeCollectionID === null"
           clickable
-          @click="collections.setActiveCollection(null)"
+          @click="viewCollection(null)"
         >
           <q-item-section>
             <q-item-label class="text-subtitle1">All Likes</q-item-label>
           </q-item-section>
+          <q-item-section side>{{ collections.recipes.length }}</q-item-section>
         </q-item>
 
         <q-separator/>
@@ -62,7 +64,7 @@
           :key="collection"
           :active="collections.activeCollectionID === collection"
           clickable
-          @click="collections.setActiveCollection(collection)"
+          @click="viewCollection(collection)"
         >
           <q-item-section>
             <q-item-label>{{ collection }}</q-item-label>
@@ -79,12 +81,19 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
+import { provide, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 import { useCollections } from 'stores/collections';
 const collections = useCollections();
 const { loaded } = storeToRefs(collections)
+
+function viewCollection(collection) {
+  collections.setActiveCollection(collection)
+  router.push({ name: 'Home' })
+}
 
 const leftDrawerOpen = ref(loaded.value)
 function toggleLeftDrawer () {
@@ -98,4 +107,6 @@ watch(loaded, (val) => {
     leftDrawerOpen.value = false
   }
 })
+
+provide('leftDrawerOpen', leftDrawerOpen)
 </script>

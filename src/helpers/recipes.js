@@ -8,7 +8,8 @@ function recipeDescription(recipe) {
 }
 
 function recipeID(recipe) {
-  return recipe['tracking-id'] || recipe['urb-url-id']
+  // return recipe['tracking-id'] || recipe['urb-url-id']
+  return _get(recipe, ['content', 'details', 'recipeId']) || recipe['urb-url-id']
 }
 
 function recipeImageURL(recipe) {

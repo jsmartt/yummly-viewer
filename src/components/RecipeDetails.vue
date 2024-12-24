@@ -16,7 +16,7 @@
         </div>
         <div class="row q-gutter-sm justify-start">
           <q-btn v-if="recipeURL(recipe)" :href="recipeURL(recipe)" target="_blank" color="accent" icon="open_in_new" label="Go to Recipe" class="col-auto" />
-          <q-btn color="primary" icon="print" label="Print" class="col-auto" disable />
+          <q-btn color="primary" icon="print" label="Print" class="col-auto" @click="print" />
           <q-btn color="primary" icon="file_download" label="Download" class="col-auto" disable />
         </div>
       </div>
@@ -34,12 +34,12 @@
 
     <q-separator class="q-my-lg"/>
 
-    <div v-if="!!recipeDescription(recipe)" class="q-mb-xl">
+    <div v-if="!!recipeDescription(recipe)">
       <div class="text-h6 q-my-md">Description</div>
       <div>{{ recipeDescription(recipe) }}</div>
     </div>
 
-    <div v-if="!!recipeIngredients(recipe)" class="q-mb-xl">
+    <div v-if="!!recipeIngredients(recipe)" class="q-mt-xl">
       <div class="text-h6 q-my-md">Ingredients</div>
       <ul>
         <li v-for="(ingredient, i) in recipeIngredients(recipe)" :key="i" class="q-mb-xs">
@@ -48,7 +48,7 @@
       </ul>
     </div>
 
-    <div v-if="!!recipeSteps(recipe)" class="q-mb-xl">
+    <div v-if="!!recipeSteps(recipe)" class="q-mt-xl">
       <div class="text-h6 q-my-md">Directions</div>
       <ol>
         <li v-for="(step, i) in recipeSteps(recipe)" :key="i" class="q-pl-sm q-mb-md">
@@ -74,15 +74,28 @@
 <script setup>
 const recipe = defineModel({ required: true })
 
-import { computed, ref } from 'vue'
+import { computed, inject, ref } from 'vue'
 
 import { recipeDescription, recipeImageURL, recipeIngredients, recipeName, recipeSourceName, recipeSteps, recipeTime, recipeURL, recipeVideoURL } from 'src/helpers/recipes'
 
 const codeExpanded = ref(false)
+const leftDrawerOpen = inject('leftDrawerOpen')
 
 const recipeJSON = computed(() => {
   return JSON.stringify(recipe.value, null, 2)
 })
+
+function print() {
+  const leftDrawerOpenBeforeState = leftDrawerOpen.value
+  leftDrawerOpen.value = false
+  setTimeout(() => {
+    // Allow time for the drawer to close
+    window.print()
+  }, "100")
+  window.onafterprint = function() {
+    leftDrawerOpen.value = leftDrawerOpenBeforeState
+  }
+}
 
 </script>
 
