@@ -15,7 +15,7 @@
           Yummly Collection Viewer
         </q-toolbar-title>
 
-        <q-btn flat round dense>
+        <q-btn flat round dense disable>
           <q-icon name="help_outline" />
         </q-btn>
       </q-toolbar>
@@ -26,7 +26,7 @@
       bordered
     >
       <q-list>
-        <q-item clickable :disable="!collections.loaded">
+        <q-item clickable :disable="!collections.loaded || true">
           <q-item-section avatar>
             <q-icon name="file_download" />
           </q-item-section>
