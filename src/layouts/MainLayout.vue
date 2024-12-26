@@ -24,10 +24,9 @@
     <q-drawer
       v-model="leftDrawerOpen"
       bordered
-      class="print-hide"
     >
       <q-list>
-        <q-item clickable :disable="!collections.loaded || true">
+        <q-item clickable :disable="!collections.loaded || true" class="hidden">
           <q-item-section avatar>
             <q-icon name="file_download" />
           </q-item-section>
@@ -38,7 +37,7 @@
           </q-item-section>
         </q-item>
 
-        <q-separator/>
+        <q-separator class="hidden" />
 
         <q-item
           :active="collections.activeCollectionID === null"
@@ -74,7 +73,7 @@
       </q-list>
     </q-drawer>
 
-    <q-page-container>
+    <q-page-container class="page-container">
       <router-view />
     </q-page-container>
   </q-layout>
@@ -114,3 +113,18 @@ watch(loaded, (val) => {
 
 provide('leftDrawerOpen', leftDrawerOpen)
 </script>
+
+<style lang="scss" scoped>
+@media print {
+  .q-layout {
+    min-height: unset !important;
+  }
+  .page-container {
+    padding-top: 0 !important;
+    padding-left: 0 !important;
+  }
+  .q-drawer-container {
+    display: none;
+  }
+}
+</style>

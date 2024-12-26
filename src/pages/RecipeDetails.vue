@@ -27,3 +27,11 @@ const recipe = computed(() => {
 import { useCollections } from 'stores/collections';
 const collections = useCollections();
 </script>
+
+<style lang="scss" scoped>
+@media print {
+  .q-page {
+    min-height: unset !important;
+  }
+}
+</style>

@@ -14,19 +14,23 @@
             <div>Total Time</div>
           </div>
         </div>
-        <div class="row q-gutter-sm justify-start">
-          <q-btn v-if="recipeURL(recipe)" :href="recipeURL(recipe)" target="_blank" color="accent" icon="open_in_new" label="Go to Recipe" class="col-auto" />
+        <div class="row q-my-lg block">
+          <div v-if="!!recipeServings(recipe)">Servings: {{ recipeServings(recipe) }}</div>
+          <div v-if="!!recipeCollections(recipe).length">Collections: {{ recipeCollections(recipe).sort().join(', ') }}</div>
+        </div>
+        <div class="row q-gutter-sm justify-start print-hide">
           <q-btn color="primary" icon="print" label="Print" class="col-auto" @click="print" />
-          <q-btn color="primary" icon="file_download" label="Download" class="col-auto" disable />
+          <q-btn color="primary" icon="file_download" label="Download" class="col-auto hidden" disable />
+          <q-btn v-if="recipeURL(recipe)" :href="recipeURL(recipe)" target="_blank" color="accent" icon="open_in_new" label="Go to Recipe" class="col-auto" />
         </div>
       </div>
       <div class="col">
         <div v-if="recipeVideoURL(recipe)">
+          <q-img :src="recipeImageURL(recipe)" width="100%" class="main-image rounded-borders print-only" loading="eager" />
           <video width="100%" controls autoplay loop class="rounded-borders print-hide">
             <source :src="recipeVideoURL(recipe)" type="video/mp4">
             Your browser does not support the video tag.
           </video>
-          <q-img :src="recipeImageURL(recipe)" width="100%" class="main-image rounded-borders print-only" />
         </div>
         <q-img v-else :src="recipeImageURL(recipe)" width="100%" class="main-image rounded-borders" />
       </div>
@@ -74,27 +78,31 @@
 <script setup>
 const recipe = defineModel({ required: true })
 
-import { computed, inject, ref } from 'vue'
+import { computed, ref } from 'vue'
 
-import { recipeDescription, recipeImageURL, recipeIngredients, recipeName, recipeSourceName, recipeSteps, recipeTime, recipeURL, recipeVideoURL } from 'src/helpers/recipes'
+import {
+  recipeCollections,
+  recipeDescription,
+  recipeImageURL,
+  recipeIngredients,
+  recipeName,
+  recipeServings,
+  recipeSourceName,
+  recipeSteps,
+  recipeTime,
+  recipeURL,
+  recipeVideoURL
+
+} from 'src/helpers/recipes'
 
 const codeExpanded = ref(false)
-const leftDrawerOpen = inject('leftDrawerOpen')
 
 const recipeJSON = computed(() => {
   return JSON.stringify(recipe.value, null, 2)
 })
 
 function print() {
-  const leftDrawerOpenBeforeState = leftDrawerOpen.value
-  leftDrawerOpen.value = false
-  setTimeout(() => {
-    // Allow time for the drawer to close
-    window.print()
-  }, "100")
-  window.onafterprint = function() {
-    leftDrawerOpen.value = leftDrawerOpenBeforeState
-  }
+  window.print()
 }
 
 </script>
@@ -109,5 +117,10 @@ function print() {
   background-color: #e8e8e8;
   overflow: scroll;
   max-height: 80vh;
+}
+@media print {
+  .main-image {
+    max-height: 300px;
+  }
 }
 </style>

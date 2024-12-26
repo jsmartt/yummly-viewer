@@ -46,6 +46,10 @@ function recipeName(recipe) {
   return recipe['title'] || _get(recipe, ['display', 'displayName']) || _get(recipe, ['content', 'details', 'name'])
 }
 
+function recipeServings(recipe) {
+  return _get(recipe, ['content', 'details', 'numberOfServings']) || null
+}
+
 function recipeSourceName(recipe) {
   return recipe['display-name'] || _get(recipe, ['display', 'source', 'sourceDisplayName']) || _get(recipe, ['content', 'details', 'displayName'])
 }
@@ -80,6 +84,7 @@ export {
   recipeIngredients,
   recipeIsInCollection,
   recipeName,
+  recipeServings,
   recipeSourceName,
   recipeSteps,
   recipeTime,
