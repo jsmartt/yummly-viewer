@@ -22,7 +22,7 @@
       </div>
       <div class="col">
         <div v-if="recipeVideoURL(recipe)">
-          <video width="100%" controls autoplay class="rounded-borders print-hide">
+          <video width="100%" controls autoplay loop class="rounded-borders print-hide">
             <source :src="recipeVideoURL(recipe)" type="video/mp4">
             Your browser does not support the video tag.
           </video>

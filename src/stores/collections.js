@@ -32,11 +32,15 @@ export const useCollections = defineStore('collections', {
           return
         }
         recipe.id = id
+        let collectionsList = recipeCollections(recipe)
         if (recipes[id]) {
           console.warn(`Duplicate entries found for recipe ${id}`)
+          // Account for duplicates (don't double-count in collections)
+          const existingCollectionsList = recipeCollections(recipes[id])
+          collectionsList = collectionsList.filter(c => !existingCollectionsList.includes(c))
+        } else {
+          recipes[id] = recipe
         }
-        recipes[id] = recipe // TODO: Account for duplicates (don't update the count)
-        const collectionsList = recipeCollections(recipe)
         if (collectionsList) {
           collectionsList.forEach(c => {
             if (!collections[c]) collections[c] = 0

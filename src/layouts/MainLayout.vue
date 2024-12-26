@@ -60,16 +60,16 @@
         </q-item>
 
         <q-item
-          v-for="(count, collection) in collections.collections"
-          :key="collection"
-          :active="collections.activeCollectionID === collection"
+          v-for="collection in sortedCollections"
+          :key="collection.name"
+          :active="collections.activeCollectionID === collection.name"
           clickable
-          @click="viewCollection(collection)"
+          @click="viewCollection(collection.name)"
         >
           <q-item-section>
-            <q-item-label>{{ collection }}</q-item-label>
+            <q-item-label>{{ collection.name }}</q-item-label>
           </q-item-section>
-          <q-item-section side>{{ count }}</q-item-section>
+          <q-item-section side>{{ collection.count }}</q-item-section>
         </q-item>
       </q-list>
     </q-drawer>
@@ -82,13 +82,17 @@
 
 <script setup>
 import { storeToRefs } from 'pinia'
-import { provide, ref, watch } from 'vue'
+import { computed, provide, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
 import { useCollections } from 'stores/collections';
 const collections = useCollections();
 const { loaded } = storeToRefs(collections)
+
+const sortedCollections = computed(() => {
+  return Object.keys(collections.collections).sort().map((key) => { return { name: key, count: collections.collections[key] } })
+})
 
 function viewCollection(collection) {
   collections.setActiveCollection(collection)
